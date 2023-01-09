@@ -1,0 +1,14 @@
+<h1>Chef <%= @chef.name %> Show Page</h1>
+<h3>Dishes</h3>
+<ul id="dishes">
+  <% @chef.dishes.each do |dish| %>
+    <li><%= dish.name %></li>
+  <% end %>
+</ul>
+<div id="dish-add-form">
+  <%= form_with url: chef_path(@chef), method: :put, local: true do |f|  %>
+    <%= f.label :dish_id, "Enter the ID of an existing Dish:"  %>
+    <%= f.number_field :dish_id%>
+    <%= f.submit "Add Dish" %>
+  <% end %>
+</div>
