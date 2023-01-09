@@ -8,6 +8,14 @@ require 'rails_helper'
 # And I click Submit
 # Then I am redirected to that chef's show page
 # And I see the dish is now listed. 
+
+# As a visitor
+# When I visit a chef's show page
+# I see a link to view a list of all ingredients that this chef uses in their dishes.
+# When I click on that link
+# I'm taken to a chef's ingredients index page
+# and I can see a unique list of names of all the ingredients that this chef uses.
+
 RSpec.describe "chef's show page" do
   describe "As a visitor" do
     describe "When I visit a chef's show page" do
@@ -20,8 +28,9 @@ RSpec.describe "chef's show page" do
 
         @dish2 = @chef1.dishes.create!(name: "King Crab Legs", description: "Wild Alaskan caught crab.")
         @ingredient4 = @dish2.ingredients.create!(name: "Alaskan King Crab Legs", calories: 600)
-        @ingredient5 = @dish2.ingredients.create!(name: "Garlic Butter", calories: 300)
+        @ingredient5 = @dish2.ingredients.create!(name: "Garlic Sauce", calories: 300)
         @ingredient6 = @dish2.ingredients.create!(name: "German Wheat Beer", calories: 300)
+        @dish2.ingredients << @ingredient3
 
         @dish3 = Dish.create!(name: "Cereal", description: "Yes, this counts as a dish.")
 
@@ -59,6 +68,31 @@ RSpec.describe "chef's show page" do
             expect(page).to have_content(@dish2.name)
             expect(page).to have_content(@dish3.name)
           end
+        end
+      end
+
+      it "I see a link to view a list of all ingredients that this chef uses in their dishes." do
+        expect(page).to have_link("Chef #{@chef1.name}'s Ingredients")
+      end
+
+      describe "When I click on that link" do
+        before :each do
+          click_link("Chef #{@chef1.name}'s Ingredients")
+        end
+        it "I'm taken to a chef's ingredients index page" do
+          expect(current_path).to eq(chef_ingredients_path(@chef1))
+        end
+
+        it "and I can see a unique list of names of all the ingredients that this chef uses." do
+          expect(@dish1.ingredients).to include(@ingredient3)
+          expect(@dish2.ingredients).to include(@ingredient3)
+          
+          expect(page).to have_content(@ingredient1.name, count: 1)
+          expect(page).to have_content(@ingredient2.name, count: 1)
+          expect(page).to have_content(@ingredient3.name, count: 1)
+          expect(page).to have_content(@ingredient4.name, count: 1)
+          expect(page).to have_content(@ingredient5.name, count: 1)
+          expect(page).to have_content(@ingredient6.name, count: 1)
         end
       end
     end

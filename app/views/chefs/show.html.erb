@@ -12,3 +12,4 @@
     <%= f.submit "Add Dish" %>
   <% end %>
 </div>
+<p><%= link_to "Chef #{@chef.name}'s Ingredients", chef_ingredients_path(@chef) %></p>
